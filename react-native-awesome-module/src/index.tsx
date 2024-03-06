@@ -11,12 +11,27 @@ interface XStackProps {
   style: ViewStyle;
 }
 
-export const XStack: React.FC<XStackProps> = ({ children, style }) => {
-  // console.log(children);
+export const XStack: React.FC<XStackProps> = ({ children, space, style }) => {
+  console.log(children);
 
-  return <View style={style}>{children}</View>;
+  const modifiedChildren = React.Children.map(children, (child) => {
+    space = 2;
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, {
+        style: {
+          ...child.props.style,
+          marginHorizontal: space * 10,
+          backgroundColor: 'black',
+        },
+      });
+    }
+    return child;
+  });
+
+  return (
+    <View style={[style, { flexDirection: 'row' }]}>{modifiedChildren}</View>
+  );
 };
-
 // export const YStack: React.FC<{ children: ReactNode }> = ({ children }) => {
 //   return <View style={{ flexDirection: 'column' }}>{children}</View>;
 // };
