@@ -1,93 +1,40 @@
-
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-
-// const button_variations = StyleSheet.create({
-//   l23943: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#fff',
-//   },
-//   text: {
-//     fontSize: 20,
-//     fontWeight: 'bold',
-//     marginBottom: 20,
-//   },
-//   rectangle: {
-//     width: 200,
-//     height: 100,
-//     backgroundColor: 'blue',
-//   },
-// });
-
-const title_variations = StyleSheet.create({
-  l23943: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  rectangle: {
-    width: 200,
-    height: 100,
-    backgroundColor: 'blue',
-  },
-});
-
-const subtitle_variations = StyleSheet.create({
-  l23943: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  rectangle: {
-    width: 200,
-    height: 100,
-    backgroundColor: 'blue',
-  },
-});
-
-const $grid_variations = StyleSheet.create({
-  l23943: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  rectangle: {
-    width: 200,
-    height: 100,
-    backgroundColor: 'blue',
-  },
-});
-
-
+import { View, type ViewStyle } from 'react-native';
+import React, { type ReactNode } from 'react';
 
 export function multiply(a: number, b: number): Promise<number> {
   return Promise.resolve(a * b);
 }
 
-export function Title(a: number, b: number): Promise<number> {
-  return (
-    <View>
-    <Text>hellooo</Text>
-    </View>
-  )
+interface XStackProps {
+  children: ReactNode[];
+  space: number | undefined;
+  style: ViewStyle;
 }
+
+export const XStack: React.FC<XStackProps> = ({ children, style }) => {
+  // console.log(children);
+
+  return <View style={style}>{children}</View>;
+};
+
+// export const YStack: React.FC<{ children: ReactNode }> = ({ children }) => {
+//   return <View style={{ flexDirection: 'column' }}>{children}</View>;
+// };
+
+// interface Styles {
+//   container: ViewStyle;
+//   contentContainer: ViewStyle;
+// }
+
+// const styles = StyleSheet.create<Styles>({
+//   container: {
+//     flex: 1,
+//     padding: 24,
+//     justifyContent: 'center',
+//     backgroundColor: 'grey',
+//   },
+//   contentContainer: {
+//     flex: 1,
+//     alignItems: 'center',
+//   },
+// });
