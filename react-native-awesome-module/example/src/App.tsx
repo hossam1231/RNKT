@@ -11,7 +11,7 @@ export default function App() {
   }, []);
 
   return (
-    <XStack space={3} style={styles.container}>
+    <XStack space={1} style={styles.container}>
       <Text>{result}</Text>
       <Text>{result}</Text>
     </XStack>
