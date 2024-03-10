@@ -8,6 +8,11 @@ const root = path.resolve(__dirname, '..');
 const modules = Object.keys({ ...pak.peerDependencies });
 
 const defaultConfig = getDefaultConfig(__dirname);
+const { generate } = require('@storybook/react-native/scripts/generate');
+
+generate({
+  configPath: path.resolve(__dirname, './.storybook'),
+});
 
 /**
  * Metro configuration
@@ -39,5 +44,7 @@ const config = {
     }, {}),
   },
 };
+
+config.transformer.unstable_allowRequireContext = true;
 
 module.exports = config;
