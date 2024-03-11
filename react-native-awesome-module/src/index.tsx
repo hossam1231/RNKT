@@ -1,6 +1,12 @@
-export { SocialNetworkDetailedScreen } from './detail/SocialNetworkDetailedScreen';
+export { PersonalPageHeaderWithMultipleActions } from './header/PersonalPageHeaderWithMultipleActions';
 
+export { HorizontalDoubleCardListWithMultipleMetaText } from './list/HorizontalDoubleCardListWithMultipleMetaText';
+
+export { SimpleCalendarDatePicker } from './calendar/SimpleCalendarDatePicker';
+
+export { SocialNetworkDetailedScreen } from './detail/SocialNetworkDetailedScreen';
 export { CarRentalDetailedScreen } from './detail/CarRentalDetailedScreen';
+export { TaskManagementDetailedScreen } from './detail/TaskManagementDetailedScreen';
 
 export { StaticWelcomePageWithHeroImage } from './landing/StaticWelcomePageWithHeroImage';
 
