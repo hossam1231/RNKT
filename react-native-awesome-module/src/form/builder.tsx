@@ -1,161 +1,176 @@
 import React, { useState } from 'react';
 import {
-  StyleSheet,
   SafeAreaView,
   View,
   Text,
   TouchableOpacity,
-  TextInput,
+  type TextStyle,
+  type ViewStyle,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Input, type InputStyles, type InputProps } from './input';
+import { styles } from './styles';
 // import FeatherIcon from 'react-native-vector-icons/Feather';
 
-export function FormBuilder() {
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    password: '',
-  });
+function InputCell(props: any) {
+  const { form, setForm, contentKey } = props;
+
+  const thisFormItem = form[contentKey];
+
+  const [requiredState, setRequiredState] = useState(thisFormItem.required);
+
+  React.useEffect(() => {
+    setForm({
+      ...form,
+      contentKey: { ...contentKey, required: requiredState },
+    });
+    return () => {
+      // effect;
+    };
+  }, [requiredState]);
+
+  return (
+    <Input
+      autoCapitalize="none"
+      autoCorrect={false}
+      keyboardType="email-address"
+      onChangeText={(text) =>
+        setForm({
+          ...form,
+          contentKey: { ...contentKey, value: text, required: requiredState },
+        })
+      }
+      style={styles.inputControl}
+      value={form.email}
+      placeholder={'Enter your email'}
+      label={'Email address'}
+      // validationType="email"
+      validationCallback={setRequiredState}
+      // {...props}
+    />
+  );
+}
+
+function generateCellItem({
+  props,
+  form,
+  setForm,
+  contentType,
+  contentKey,
+  index,
+}: {
+  props: any;
+  contentType: string;
+  contentKey: string;
+  form: any;
+  setForm: any;
+  index: number;
+}) {
+  switch (contentType) {
+    case 'radioGroup':
+      return;
+
+    case 'inputGroup':
+      // return <Input {...props} />;
+      return (
+        <InputCell
+          form={form}
+          contentKey={contentKey}
+          setForm={setForm}
+          key={index}
+          {...props}
+        />
+      );
+
+    default:
+      return;
+  }
+}
+
+const ContentCell = (props: {
+  contentType: any;
+  contentKeys: string;
+  form: any;
+  setForm: any;
+}) => {
+  const { contentType, contentKeys, form, setForm } = props;
+  if (!contentType) return <></>;
+
+  return contentKeys.map((key, index) =>
+    generateCellItem({
+      props,
+      form,
+      setForm,
+      contentType,
+      index,
+      contentKey: key,
+    })
+  );
+};
+
+function Builder(props: any) {
+  const { pages, model, pageStyles, formStyles } = props;
+
+  const [form, setForm] = useState(
+    Object.keys(model).reduce((acc, key) => {
+      acc[key] = { value: '', required: 0 };
+      return acc;
+    }, {})
+  );
+
+  const [index, setIndex] = useState(0);
+
+  const currentPage = pages[index];
+  const content = currentPage.content;
+  const contentType = Object.keys(content)[0];
+  const contentKeys = content[contentType];
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.headerAction}>
-            <TouchableOpacity
-              onPress={() => {
-                // handle onPress
-              }}
-            >
-              {/* <FeatherIcon color="#000" name="x" size={24} /> */}
-            </TouchableOpacity>
-          </View>
+      <View style={pageStyles ? pageStyles.container : styles.container}>
+        <View style={pageStyles ? pageStyles.header : styles.header}>
+          {pages.pageItems?.right ? (
+            <View style={styles.headerAction}>
+              <TouchableOpacity
+                onPress={() => {
+                  // handle onPress
+                }}
+              >
+                <Text>ho</Text>
+                {/* <FeatherIcon color="#000" name="x" size={24} /> */}
+              </TouchableOpacity>
+            </View>
+          ) : (
+            // <Text style={{ color: 'transparent' }}>hi</Text>
+            <></>
+          )}
 
-          <Text style={styles.headerTitle}>Create an Account</Text>
+          <Text style={styles.headerTitle}>{currentPage['title']}</Text>
 
           <View style={[styles.headerAction, { alignItems: 'flex-end' }]}>
-            <TouchableOpacity
-              onPress={() => {
-                // handle onPress
-              }}
-            >
-              {/* <FeatherIcon color="#000" name="info" size={24} /> */}
-            </TouchableOpacity>
+            {pages.pageItems?.right ? (
+              <TouchableOpacity
+                onPress={() => {
+                  // handle onPress
+                }}
+              >
+                {/* <FeatherIcon color="#000" name="info" size={24} /> */}
+              </TouchableOpacity>
+            ) : (
+              // <Text style={{ color: 'transparent' }}>hi</Text>
+              <></>
+            )}
           </View>
         </View>
 
         <KeyboardAwareScrollView>
-          <View style={styles.form}>
-            <View style={styles.input}>
-              <Text style={styles.inputLabel}>Enter your name</Text>
-
-              <TextInput
-                onChangeText={(name) => setForm({ ...form, name })}
-                placeholder="Name"
-                placeholderTextColor="#878E9A"
-                style={styles.inputControl}
-                value={form.name}
-              />
-            </View>
-
-            <View style={styles.input}>
-              <Text style={styles.inputLabel}>Enter your email</Text>
-
-              <TextInput
-                autoCapitalize="none"
-                autoCorrect={false}
-                keyboardType="email-address"
-                onChangeText={(email) => setForm({ ...form, email })}
-                placeholder="Email address"
-                placeholderTextColor="#878E9A"
-                style={styles.inputControl}
-                value={form.email}
-              />
-            </View>
-
-            <View style={styles.input}>
-              <Text style={styles.inputLabel}>Enter your password</Text>
-
-              <TextInput
-                autoCorrect={false}
-                onChangeText={(password) => setForm({ ...form, password })}
-                placeholder="********"
-                placeholderTextColor="#878E9A"
-                style={styles.inputControl}
-                secureTextEntry={true}
-                value={form.password}
-              />
-            </View>
-
-            <View style={styles.inputValidation}>
-              <View style={styles.inputValidationRow}>
-                {/* <FeatherIcon color="#292B32" name="check-circle" size={14} /> */}
-
-                <Text style={styles.inputValidationRowText}>
-                  Minimum of 12 characters
-                </Text>
-              </View>
-
-              <View style={styles.inputValidationRow}>
-                {/* <FeatherIcon color="#292B32" name="check-circle" size={14} /> */}
-
-                <Text style={styles.inputValidationRowText}>
-                  At least 1 lower case (a-z)
-                </Text>
-              </View>
-
-              <View
-                style={[
-                  styles.inputValidationRow,
-                  styles.inputValidationRowInvalid,
-                ]}
-              >
-                {/* <FeatherIcon color="#292B32" name="check-circle" size={14} /> */}
-
-                <Text style={styles.inputValidationRowText}>
-                  At least 1 upper case (A-Z)
-                </Text>
-              </View>
-
-              <View style={styles.inputValidationRow}>
-                {/* <FeatherIcon color="#292B32" name="check-circle" size={14} /> */}
-
-                <Text style={styles.inputValidationRowText}>
-                  At least 1 number (0-9)
-                </Text>
-              </View>
-
-              <View
-                style={[
-                  styles.inputValidationRow,
-                  styles.inputValidationRowInvalid,
-                ]}
-              >
-                {/* <FeatherIcon color="#292B32" name="check-circle" size={14} /> */}
-
-                <Text style={styles.inputValidationRowText}>
-                  At least 1 symbol (%&,!#)
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.input}>
-              <Text style={styles.inputLabel}>Confirm your password</Text>
-
-              <TextInput
-                autoCorrect={false}
-                onChangeText={(confirmPassword) =>
-                  //  @ts-ignore
-                  setForm({ ...form, confirmPassword })
-                }
-                placeholder="********"
-                placeholderTextColor="#878E9A"
-                style={styles.inputControl}
-                secureTextEntry={true}
-                //  @ts-ignore
-                value={form.confirmPassword}
-              />
-            </View>
+          <View style={formStyles ? formStyles.form : styles.form}>
+            <ContentCell
+              form={form}
+              setForm={setForm}
+              contentType={contentType}
+              contentKeys={contentKeys}
+            />
 
             <TouchableOpacity
               onPress={() => {
@@ -173,92 +188,54 @@ export function FormBuilder() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 0,
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
-  },
-  form: {
-    paddingHorizontal: 24,
-  },
-  /** Header */
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-  },
-  headerAction: {
-    width: 40,
-    height: 40,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 21,
-    fontWeight: '600',
-    color: '#292929',
-  },
-  /** Input */
-  input: {
-    marginBottom: 16,
-  },
-  inputLabel: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#292929',
-    marginBottom: 8,
-  },
-  inputControl: {
-    height: 44,
-    backgroundColor: '#f0f4f6',
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#222',
-    borderColor: '#d7dbdd',
-    borderWidth: 1,
-  },
-  inputValidation: {
-    marginBottom: 12,
-  },
-  inputValidationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginBottom: 6,
-  },
-  inputValidationRowText: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: '#292b32',
-    marginLeft: 5,
-  },
-  inputValidationRowInvalid: {
-    opacity: 0.35,
-  },
-  /** Button */
-  btn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 24,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderWidth: 1,
-    backgroundColor: '#292B32',
-    borderColor: '#292B32',
-    marginTop: 16,
-  },
-  btnText: {
-    fontSize: 16,
-    lineHeight: 26,
-    fontWeight: '600',
-    color: '#fff',
-    letterSpacing: 0.133,
-  },
-});
+export const FormBuilder = (props: FormBuilderProps) => {
+  return <Builder {...props} />;
+};
+
+{
+  /* <Input
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="email-address"
+              onChangeText={(email) => setForm({ ...form, email })}
+              style={styles.inputControl}
+              value={form.email}
+              placeholder={'Enter your email'}
+              label={'Email address'}
+              // validationType="email"
+            />
+
+            <Input
+              autoCapitalize="none"
+              autoCorrect={false}
+              onChangeText={(password) => setForm({ ...form, password })}
+              style={formStyles ? formStyles.inputControl : styles.inputControl}
+              password={true}
+              value={form.password}
+              label={'Password'}
+              validationType="minLength"
+            />
+
+            <Input
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="phone-pad"
+              onChangeText={(phoneNumber) => setForm({ ...form, phoneNumber })}
+              style={styles.inputControl}
+              value={form.phoneNumber}
+              placeholder={'Enter your phone number'}
+              label={'Phone Number'}
+              validationType="number"
+            />
+
+            <Input
+              autoCapitalize="none"
+              autoCorrect={false}
+              onChangeText={(username) => setForm({ ...form, username })}
+              style={styles.inputControl}
+              value={form.username}
+              placeholder={'Choose a username'}
+              label={'Username'}
+              validationType="lowerCase"
+            /> */
+}
