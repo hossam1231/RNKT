@@ -1,6 +1,7 @@
 import { View, Text } from 'react-native';
 import { styles } from './styles';
 import React from 'react';
+import type { ValidationProps, ValidationComponentProps } from './interface';
 
 const ValidationChecker = ({
   type,

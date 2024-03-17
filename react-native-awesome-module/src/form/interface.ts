@@ -1,9 +1,11 @@
-interface FormStyles {
+import type { ViewStyle, TextStyle } from "react-native";
+
+export interface FormStyles {
   form: ViewStyle;
   inputControl: TextStyle;
 }
 
-interface PageStyles {
+export interface PageStyles {
   pageItems?: {
     right?: any;
     left?: any;
@@ -14,21 +16,21 @@ interface PageStyles {
   headerTitle: TextStyle;
 }
 
-interface ButtonStyles {
+export interface ButtonStyles {
   btn: ViewStyle;
   btnText: TextStyle;
 }
 
-interface CallbackProps {
+export interface CallbackProps {
   setPaginatedForm: any;
 }
 
-interface ModelProps extends InputProps {
+export interface ModelProps extends InputProps {
   required?: boolean;
   name: string;
 }
 
-interface FormBuilderProps {
+export interface FormBuilderProps {
   // pageItems?: {
   //   right?: boolean;
   // };
@@ -81,13 +83,13 @@ export interface InputProps {
   validationType?: string;
 }
 
-interface ValidationComponentProps {
+export interface ValidationComponentProps {
   inputString: string;
   validationCallback: any;
   validationType: string;
 }
 
-interface ValidationProps {
+export interface ValidationProps {
   type: string;
   validationCallback: any;
   inputString: string;

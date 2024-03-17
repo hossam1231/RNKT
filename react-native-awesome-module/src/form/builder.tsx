@@ -1,195 +1,186 @@
 import React, { useState } from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TouchableOpacity,
-  type TextStyle,
-  type ViewStyle,
-} from 'react-native';
+import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Input, type InputStyles, type InputProps } from './input';
+import { InputCell } from './input';
 import { styles } from './styles';
+import type { FormBuilderProps } from './interface';
+import { SimpleFooterWithSingleAction } from '../footer';
 // import FeatherIcon from 'react-native-vector-icons/Feather';
 
-function InputCell(props: any) {
-  const { form, setForm, contentKey } = props;
-
-  const thisFormItem = form[contentKey];
-
-  const [requiredState, setRequiredState] = useState(thisFormItem.required);
-
-  React.useEffect(() => {
-    setForm({
-      ...form,
-      contentKey: { ...contentKey, required: requiredState },
-    });
-    return () => {
-      // effect;
-    };
-  }, [requiredState]);
-
-  return (
-    <Input
-      autoCapitalize="none"
-      autoCorrect={false}
-      keyboardType="email-address"
-      onChangeText={(text) =>
-        setForm({
-          ...form,
-          contentKey: { ...contentKey, value: text, required: requiredState },
-        })
-      }
-      style={styles.inputControl}
-      value={form.email}
-      placeholder={'Enter your email'}
-      label={'Email address'}
-      // validationType="email"
-      validationCallback={setRequiredState}
-      // {...props}
-    />
-  );
-}
-
-function generateCellItem({
-  props,
-  form,
-  setForm,
-  contentType,
-  contentKey,
-  index,
-}: {
-  props: any;
-  contentType: string;
-  contentKey: string;
-  form: any;
-  setForm: any;
-  index: number;
-}) {
-  switch (contentType) {
-    case 'radioGroup':
-      return;
-
-    case 'inputGroup':
-      // return <Input {...props} />;
-      return (
-        <InputCell
-          form={form}
-          contentKey={contentKey}
-          setForm={setForm}
-          key={index}
-          {...props}
-        />
-      );
-
-    default:
-      return;
-  }
-}
-
-const ContentCell = (props: {
-  contentType: any;
-  contentKeys: string;
-  form: any;
-  setForm: any;
-}) => {
-  const { contentType, contentKeys, form, setForm } = props;
-  if (!contentType) return <></>;
-
-  return contentKeys.map((key, index) =>
-    generateCellItem({
-      props,
-      form,
-      setForm,
-      contentType,
-      index,
-      contentKey: key,
-    })
-  );
+export const FormBuilder = (props: FormBuilderProps) => {
+  return <Builder {...props} />;
 };
 
-function Builder(props: any) {
-  const { pages, model, pageStyles, formStyles } = props;
+type BuilderProps = {
+  model: any;
+  pages: any;
+};
+
+function Builder(props: BuilderProps) {
+  const { model } = props;
 
   const [form, setForm] = useState(
     Object.keys(model).reduce((acc, key) => {
-      acc[key] = { value: '', required: 0 };
+      acc[key] = { value: '' };
       return acc;
     }, {})
   );
+  // map the model to make a minified object suitable for posting
+
+  const [requiredPopover, setRequiredPopover] = useState();
+
+  React.useEffect(() => {
+    const areRequiredFieldsCompleted = Object.values(form).some(
+      (field) => field.required === true
+    );
+    setRequiredPopover(!areRequiredFieldsCompleted);
+    // return () => {
+    //   effect;
+    // };
+  }, [form]);
 
   const [index, setIndex] = useState(0);
 
-  const currentPage = pages[index];
-  const content = currentPage.content;
-  const contentType = Object.keys(content)[0];
-  const contentKeys = content[contentType];
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <View style={pageStyles ? pageStyles.container : styles.container}>
-        <View style={pageStyles ? pageStyles.header : styles.header}>
-          {pages.pageItems?.right ? (
-            <View style={styles.headerAction}>
-              <TouchableOpacity
-                onPress={() => {
-                  // handle onPress
-                }}
-              >
-                <Text>ho</Text>
-                {/* <FeatherIcon color="#000" name="x" size={24} /> */}
-              </TouchableOpacity>
-            </View>
-          ) : (
-            // <Text style={{ color: 'transparent' }}>hi</Text>
-            <></>
-          )}
-
-          <Text style={styles.headerTitle}>{currentPage['title']}</Text>
-
-          <View style={[styles.headerAction, { alignItems: 'flex-end' }]}>
-            {pages.pageItems?.right ? (
-              <TouchableOpacity
-                onPress={() => {
-                  // handle onPress
-                }}
-              >
-                {/* <FeatherIcon color="#000" name="info" size={24} /> */}
-              </TouchableOpacity>
-            ) : (
-              // <Text style={{ color: 'transparent' }}>hi</Text>
-              <></>
-            )}
-          </View>
-        </View>
-
-        <KeyboardAwareScrollView>
-          <View style={formStyles ? formStyles.form : styles.form}>
-            <ContentCell
-              form={form}
-              setForm={setForm}
-              contentType={contentType}
-              contentKeys={contentKeys}
-            />
-
-            <TouchableOpacity
-              onPress={() => {
-                // handle onPress
-              }}
-            >
-              <View style={styles.btn}>
-                <Text style={styles.btnText}>Sign Up</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAwareScrollView>
+      <View style={styles.container}>
+        {requiredPopover ? (
+          <SimpleFooterWithSingleAction>
+            <App setForm={setForm} form={form} {...props} />
+          </SimpleFooterWithSingleAction>
+        ) : (
+          <App setForm={setForm} form={form} {...props} />
+        )}
       </View>
     </SafeAreaView>
   );
 }
 
-export const FormBuilder = (props: FormBuilderProps) => {
-  return <Builder {...props} />;
+type FormProps = {
+  form: any;
+  setForm: any;
+};
+
+function App(props: BuilderProps & FormProps) {
+  const { pages } = props;
+  // pages was still in the props just not needed and was passed using the spread operator
+
+  const currentPage = pages[index];
+  // the current design spec to follow for this page
+  const content = currentPage.content;
+  // path to content
+  const contentType = Object.keys(content)[0];
+  // what type of form object will be showed on the page
+  const contentKeys = content[contentType];
+  console.log(
+    `$: ----------------------------------------------------------------------------------------------`
+  );
+  console.log(
+    `%c $: App -> contentKeys `,
+    `font-size:16px;background-color:#a7764f;color:white;`,
+    contentKeys
+  );
+  console.log(
+    `$: ----------------------------------------------------------------------------------------------`
+  );
+  // the keyed content to be showed on this page
+
+  return (
+    <>
+      <View style={styles.container}>
+        {pages.pageItems?.right ? (
+          <View style={styles.headerAction}>
+            <TouchableOpacity
+              onPress={() => {
+                // handle onPress
+              }}
+            >
+              <Text>ho</Text>
+              {/* <FeatherIcon color="#000" name="x" size={24} /> */}
+            </TouchableOpacity>
+          </View>
+        ) : (
+          // <Text style={{ color: 'transparent' }}>hi</Text>
+          <></>
+        )}
+
+        <Text style={styles.headerTitle}>{currentPage['title']}</Text>
+
+        <View style={[styles.headerAction, { alignItems: 'flex-end' }]}>
+          {pages.pageItems?.right ? (
+            <TouchableOpacity
+              onPress={() => {
+                // handle onPress
+              }}
+            >
+              {/* <FeatherIcon color="#000" name="info" size={24} /> */}
+            </TouchableOpacity>
+          ) : (
+            // <Text style={{ color: 'transparent' }}>hi</Text>
+            <></>
+          )}
+        </View>
+      </View>
+
+      <KeyboardAwareScrollView>
+        <View style={styles.form}>
+          <ContentCell
+            {...props}
+            contentType={contentType}
+            contentKeys={contentKeys}
+          />
+
+          <TouchableOpacity
+            onPress={() => {
+              // handle onPress
+            }}
+          >
+            <View style={styles.btn}>
+              <Text style={styles.btnText}>Sign Up</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAwareScrollView>
+    </>
+  );
+}
+
+type ContentCellProps = {
+  contentType: any;
+  contentKeys: string;
+  form: any;
+  setForm: any;
+};
+
+const ContentCell = (props: BuilderProps & FormProps & ContentCellProps) => {
+  const { contentType, contentKeys } = props;
+  if (!contentType) return <></>;
+
+  type CellItemGeneratorProps = {
+    contentKey: any;
+    index: any;
+  };
+
+  function generateCellItem({ contentKey, index }: CellItemGeneratorProps) {
+    switch (contentType) {
+      case 'radioGroup':
+        return;
+
+      case 'inputGroup':
+        // return <Input {...props} />;
+        return <InputCell contentKey={contentKey} key={index} {...props} />;
+
+      default:
+        return;
+    }
+  }
+
+  return contentKeys.map((key, index) =>
+    generateCellItem({
+      index,
+      contentKey: key,
+    })
+  );
 };
 
 {

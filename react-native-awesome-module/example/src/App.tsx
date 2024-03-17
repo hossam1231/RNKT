@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { FormBuilder } from 'rnkt';
 
-// export { default } from '../.storybook';
-
 type Page = {
   pageIcons?: any;
   title: string;
@@ -111,4 +109,5 @@ const App = () => {
   return <FormBuilder pages={pages} model={model} callBack={setData} />;
 };
 
+// export { default } from '../.storybook';
 export default App;
