@@ -4,16 +4,18 @@ import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 
 export function SimpleFooterWithSingleAction({
   icon,
+  children,
 }: {
   icon: React.ReactElement;
 }) {
   return (
     <View style={{ flex: 1 }}>
-      <View style={styles.placeholder}>
-        <View style={styles.placeholderInset}>
+      {children}
+      {/* <View style={styles.placeholder}> */}
+        {/* <View style={styles.placeholderInset}>
           {/* Replace with your content */}
-        </View>
-      </View>
+        {/* </View> */}
+      {/* </View> */}
 
       <View style={styles.overlay}>
         <View />

@@ -3,6 +3,21 @@ import { styles } from './styles';
 import React from 'react';
 import type { ValidationProps, ValidationComponentProps } from './interface';
 
+export function getContentFromData(data: any) {
+  return data['content'];
+}
+
+export function getFormDataValues(content: any) {
+  let contentType;
+  let contentKeys;
+  if (!content) {
+    return { contentType, contentKeys };
+  }
+  contentType = Object.keys(content)[0];
+  // what type of form item will be showed on the page
+  contentKeys = content[contentType];
+  return { contentType, contentKeys };
+}
 const ValidationChecker = ({
   type,
   inputString,

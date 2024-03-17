@@ -40,6 +40,7 @@ const App = () => {
     },
     password: {
       required: true,
+      password: true,
       label: 'Password',
       placeholder: 'Enter your password',
     },
