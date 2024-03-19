@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FormBuilder } from 'rnkt';
+import { FormBuilder, VerticleItemListWithActionsAndDescriptions } from 'rnkt';
 
 type Page = {
   pageIcons?: any;
@@ -135,5 +135,12 @@ const App = () => {
   return <FormBuilder pages={pages} model={model} callBack={setData} />;
 };
 
+const _App = () => {
+  return <VerticalItemListWithActionsAndDescriptions />;
+};
+
 export { default } from '../.storybook';
+
+export default _App;
+
 // export default App;

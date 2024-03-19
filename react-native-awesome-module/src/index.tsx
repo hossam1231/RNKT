@@ -1,3 +1,5 @@
+export { VerticalItemListWithActionsAndDescriptions } from './components/list/VerticalItemListWithActionsAndDescriptions';
+
 export {
   KeyboardAwareFlatList,
   KeyboardAwareScrollView,
