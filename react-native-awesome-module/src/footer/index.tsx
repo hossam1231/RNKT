@@ -5,6 +5,7 @@ import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 export function SimpleFooterWithSingleAction({
   icon,
   children,
+  actions,
 }: {
   icon: React.ReactElement;
 }) {
@@ -12,21 +13,21 @@ export function SimpleFooterWithSingleAction({
     <View style={{ flex: 1 }}>
       {children}
       {/* <View style={styles.placeholder}> */}
-        {/* <View style={styles.placeholderInset}>
+      {/* <View style={styles.placeholderInset}>
           {/* Replace with your content */}
-        {/* </View> */}
+      {/* </View> */}
       {/* </View> */}
 
       <View style={styles.overlay}>
         <View />
         <TouchableOpacity
           onPress={() => {
-            // handle onPress
+            actions[0].callback();
           }}
         >
           <View style={styles.btn}>
-            <Text style={styles.btnText}>Next</Text>
-            {icon}
+            <Text style={styles.btnText}>{actions[0].text ?? 'Next'}</Text>
+            {actions[0].icon}
           </View>
         </TouchableOpacity>
       </View>

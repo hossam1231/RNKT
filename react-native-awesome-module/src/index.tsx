@@ -1,3 +1,10 @@
+export {
+  KeyboardAwareFlatList,
+  KeyboardAwareScrollView,
+} from 'react-native-keyboard-aware-scroll-view';
+
+export { ListWithTextRadioButtons } from './form/ListWithTextRadioButtons';
+
 export { PersonalPageHeaderWithMultipleActions } from './header/PersonalPageHeaderWithMultipleActions';
 
 export { HorizontalDoubleCardListWithMultipleMetaText } from './list/HorizontalDoubleCardListWithMultipleMetaText';
@@ -17,7 +24,7 @@ export { ModernAndMinimalisticSettingsPageWithLightActions } from './pages/Moder
 
 export { ToggleButtonGroupWithTextAndIconTabs } from './pages/ToggleButtonGroupWithTextAndIconTabs';
 
-export { FormBuilder } from './form/builder';
+export { FormBuilder } from './formBuilder/builder';
 
 export {
   SimpleFooterWithSingleAction,

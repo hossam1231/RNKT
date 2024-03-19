@@ -50,7 +50,7 @@ interface YStackProps {
 export const YStack: React.FC<YStackProps> = React.memo(
   ({ children, space = 0, style }) => {
     // space is default 0
-    console.log(children);
+    // console.log(children);
 
     const modifiedChildren = React.useMemo(() => {
       return React.Children.map(children, (child) => {
@@ -59,7 +59,7 @@ export const YStack: React.FC<YStackProps> = React.memo(
             // @ts-ignore
             style: {
               ...child.props.style,
-              marginHorizontal: space * 10,
+              marginVertical: space * 10,
               // backgroundColor: 'black',
             },
           });

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { InputCell, InputGovernor } from './input';
+import { InputGovernor } from './input';
 import { styles } from './styles';
 import type { FormBuilderProps } from './interface';
 import { SimpleFooterWithSingleAction } from '../footer';
 import { getContentFromData, getFormDataValues } from './util';
+import { ListWithTextRadioButtons } from '../form/ListWithTextRadioButtons';
+import { RadioCell } from './radio';
 // import FeatherIcon from 'react-native-vector-icons/Feather';
 
 export const FormBuilder = (props: FormBuilderProps) => {
@@ -20,7 +22,7 @@ type BuilderProps = {
 function Builder(props: BuilderProps) {
   const [pageIndex, setPageIndex] = useState(0);
 
-  const { model } = props;
+  const { model, contentKey } = props;
 
   const [form, setForm] = useState(
     Object.keys(model).reduce((acc, key) => {
@@ -28,45 +30,36 @@ function Builder(props: BuilderProps) {
       return acc;
     }, {})
   );
+
   // map the model to make a minified object suitable for posting
 
   const [requiredPopover, setRequiredPopover] = useState();
 
+  const areRequiredFieldsPresent = () =>
+    Object.values(form).some((field) => field.required === true);
+
   React.useEffect(() => {
-    const areRequiredFieldsCompleted = Object.values(form).some(
-      (field) => field.required === true
-    );
-    setRequiredPopover(!areRequiredFieldsCompleted);
-    // return () => {
-    //   effect;
-    // };
+    setRequiredPopover(!areRequiredFieldsPresent());
   }, [form]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <View style={styles.container}>
-        {requiredPopover ? (
-          <SimpleFooterWithSingleAction
-            actions={[
-              {
-                callback: () => {
-                  setPageIndex(pageIndex + 1);
-                },
+    <>
+      {requiredPopover ? (
+        <SimpleFooterWithSingleAction
+          actions={[
+            {
+              callback: () => {
+                setPageIndex(pageIndex + 1);
               },
-            ]}
-          >
-            <App
-              pageIndex={pageIndex}
-              setForm={setForm}
-              form={form}
-              {...props}
-            />
-          </SimpleFooterWithSingleAction>
-        ) : (
+            },
+          ]}
+        >
           <App pageIndex={pageIndex} setForm={setForm} form={form} {...props} />
-        )}
-      </View>
-    </SafeAreaView>
+        </SimpleFooterWithSingleAction>
+      ) : (
+        <App pageIndex={pageIndex} setForm={setForm} form={form} {...props} />
+      )}
+    </>
   );
 }
 
@@ -88,59 +81,53 @@ function App(props: BuilderProps & AppProps & FormProps) {
   const content = getContentFromData(currentPage);
 
   return (
-    <>
-      {/* <View style={styles.container}> */}
-      {pages.pageItems?.right ? (
-        <View style={styles.headerAction}>
-          <TouchableOpacity
-            onPress={() => {
-              // handle onPress
-            }}
-          >
-            <Text>ho</Text>
-            {/* <FeatherIcon color="#000" name="x" size={24} /> */}
-          </TouchableOpacity>
-        </View>
-      ) : (
-        // <Text style={{ color: 'transparent' }}>hi</Text>
-        <></>
-      )}
-
-      <Text style={styles.headerTitle}>{currentPage['title']}</Text>
-
-      <View style={[styles.headerAction, { alignItems: 'flex-end' }]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fafafa' }}>
+      <View style={styles.container}>
+        <Text style={styles.title}>{currentPage['title']}</Text>
         {pages.pageItems?.right ? (
-          <TouchableOpacity
-            onPress={() => {
-              // handle onPress
-            }}
-          >
-            {/* <FeatherIcon color="#000" name="info" size={24} /> */}
-          </TouchableOpacity>
-        ) : (
-          // <Text style={{ color: 'transparent' }}>hi</Text>
-          <></>
-        )}
-      </View>
-      {/* </View> */}
-
-      <KeyboardAwareScrollView>
-        <View style={styles.form}>
-          <ContentCell {...props} content={content} />
-          {pageIndex === pages.length && (
+          <View style={styles.headerAction}>
             <TouchableOpacity
               onPress={() => {
                 // handle onPress
               }}
             >
-              <View style={styles.btn}>
-                <Text style={styles.btnText}>Sign Up</Text>
-              </View>
+              <Text>ho</Text>
             </TouchableOpacity>
-          )}
+          </View>
+        ) : null}
+
+        {/* <Text style={styles.headerTitle}>{currentPage['title']}</Text> */}
+
+        <View style={[styles.headerAction, { alignItems: 'flex-end' }]}>
+          {pages.pageItems?.right ? (
+            <TouchableOpacity
+              onPress={() => {
+                // handle onPress
+              }}
+            >
+              {/* <FeatherIcon color="#000" name="info" size={24} /> */}
+            </TouchableOpacity>
+          ) : null}
         </View>
-      </KeyboardAwareScrollView>
-    </>
+
+        <KeyboardAwareScrollView>
+          <View style={styles.form}>
+            <ContentCell {...props} content={content} />
+            {pageIndex === pages.length && (
+              <TouchableOpacity
+                onPress={() => {
+                  // handle onPress
+                }}
+              >
+                <View style={styles.btn}>
+                  <Text style={styles.btnText}>Sign Up</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          </View>
+        </KeyboardAwareScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -155,13 +142,20 @@ const ContentCell: React.FC<ContentCellProps> = (props) => {
 
   if (!contentType) return null;
 
-  const generateCellItem = (data: any, index: number) => {
+  const generateCellItem = (data: any, index: number, contentKey: any) => {
     switch (contentType) {
       case 'radioGroup':
-        return null;
+        return <RadioCell contentKey={contentKey} {...props} {...data} />;
 
       case 'inputGroup':
-        return <InputGovernor key={index} {...props} {...data} />;
+        return (
+          <InputGovernor
+            contentKey={contentKey}
+            key={index}
+            {...props}
+            {...data}
+          />
+        );
 
       default:
         return null;
@@ -171,7 +165,7 @@ const ContentCell: React.FC<ContentCellProps> = (props) => {
   return (
     <>
       {contentKeys.map((contentKey, index) =>
-        generateCellItem({ ...model[contentKey] }, index)
+        generateCellItem({ ...model[contentKey] }, index, contentKey)
       )}
     </>
   );

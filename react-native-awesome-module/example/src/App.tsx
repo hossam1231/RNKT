@@ -13,7 +13,7 @@ type Page = {
 const App = () => {
   const [data, setData] = React.useState();
 
-  console.log(data);
+  // console.log(data);
 
   const pageIcons = {
     left: () => {
@@ -25,84 +25,109 @@ const App = () => {
   };
 
   const model = {
-    email: {
+    // email: {
+    //   required: true,
+    //   label: 'Email',
+    //   placeholder: 'Enter your email',
+    //   autoCapitalize: 'none',
+    //   autoCorrect: false,
+    //   keyboardType: 'email-address',
+    /* trunk-ignore(git-diff-check/error) */
+    // },
+    // email: {
+    //   required: true,
+    //   label: 'Email',
+    //   placeholder: 'Enter your email',
+    //   autoCapitalize: 'none',
+    //   autoCorrect: false,
+    //   keyboardType: 'email-address',
+    /* trunk-ignore(git-diff-check/error) */
+    // },
+    previousOwners: {
+      // tally
+      modifier: 'tally',
+      // this lets the input group know we have a disguised input so in this scenario our input is a tally
+      required: false,
+      label: 'Previous owners',
+      description:
+        'How many other owners has this vehicle had including yourself',
+    },
+    condition: {},
+    make: {},
+    name: {},
+    price: {},
+    distance: {},
+    vehicleType: {
       required: true,
-      label: 'Email',
-      placeholder: 'Enter your email',
-      autoCapitalize: 'none',
-      autoCorrect: false,
-      keyboardType: 'email-address',
+      options: {
+        car: null,
+        Bike: null,
+        Van: null,
+        Machinery: null,
+      },
     },
-    username: {
+    carModel: {
       required: true,
-      label: 'Username',
-      placeholder: 'Enter your username',
-    },
-    password: {
-      required: true,
-      password: true,
-      label: 'Password',
-      placeholder: 'Enter your password',
-    },
-    confirmPassword: {
-      required: true,
-      label: 'Confirm Password',
-      placeholder: 'Re-enter your password',
-    },
-    phoneNumber: {
-      required: false,
-      label: 'Phone Number',
-      placeholder: 'Enter your phone number',
-    },
-    address: {
-      required: false,
-      label: 'Address',
-      placeholder: 'Enter your address',
-    },
-    city: {
-      required: false,
-      label: 'City',
-      placeholder: 'Enter your city',
-    },
-    country: {
-      required: false,
-      label: 'Country',
-      placeholder: 'Enter your country',
-    },
-    postalCode: {
-      required: false,
-      label: 'Postal Code',
-      placeholder: 'Enter your postal code',
-    },
-    dateOfBirth: {
-      required: false,
-      label: 'Date of Birth',
-      placeholder: 'Enter your date of birth',
-    },
-    gender: {
-      required: false,
-      label: 'Gender',
-      placeholder: 'Select your gender',
-    },
-    subscription: {
-      required: false,
-      label: 'Subscribe to Newsletter',
-      placeholder: 'Subscribe to our newsletter',
+      options: {
+        car: null,
+        Bike: null,
+        Van: null,
+        Machinery: null,
+      },
     },
   };
 
   const pages: Page[] = [
     {
-      pageIcons,
-      title: 'Create account',
+      title: 'Vehicle Type',
       content: {
-        inputGroup: ['email', 'username', 'password', 'confirmPassword'],
+        radioGroup: ['vehicleType'],
       },
     },
     {
-      title: 'Gender',
+      title: 'Make',
       content: {
-        radioGroup: ['gender'],
+        list: ['make'],
+      },
+    },
+    {
+      pageIcons,
+      title: 'Listing information',
+      content: {
+        inputGroup: [
+          'name',
+          'price',
+          'distance',
+          'year',
+          'thumbnailImages',
+          'previousOwners',
+        ],
+      },
+    },
+    {
+      title: 'Condition',
+      content: {
+        radioGroup: ['condition'],
+      },
+    },
+    {
+      title: 'Nearest Location',
+      content: {
+        searchList: ['nearestLocation'],
+      },
+    },
+    {
+      pageIcons,
+      title: 'Listing information',
+      content: {
+        inputGroup: [
+          'name',
+          'price',
+          'distance',
+          'year',
+          'thumbnailImages',
+          'previousOwners',
+        ],
       },
     },
   ];
@@ -110,5 +135,5 @@ const App = () => {
   return <FormBuilder pages={pages} model={model} callBack={setData} />;
 };
 
-// export { default } from '../.storybook';
-export default App;
+export { default } from '../.storybook';
+// export default App;

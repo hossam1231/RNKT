@@ -18,30 +18,27 @@ export function getFormDataValues(content: any) {
   contentKeys = content[contentType];
   return { contentType, contentKeys };
 }
-const ValidationChecker = ({
-  type,
-  inputString,
-  validationCallback,
-}: ValidationProps) => {
+const ValidationChecker = (props: ValidationProps) => {
+  const { value } = props;
   const validationChecks: { [key: string]: () => string } = {
     minLength: () =>
-      inputString.length >= 12
+      value.length >= 12
         ? 'Valid: Minimum of 12 characters'
         : 'Invalid: Requires minimum of 12 characters',
     lowerCase: () =>
-      inputString.match(/[a-z]/)
+      value.match(/[a-z]/)
         ? 'Valid: Contains lower case (a-z)'
         : 'Invalid: Requires at least 1 lower case (a-z)',
     upperCase: () =>
-      inputString.match(/[A-Z]/)
+      value.match(/[A-Z]/)
         ? 'Valid: Contains upper case (A-Z)'
         : 'Invalid: Requires at least 1 upper case (A-Z)',
     number: () =>
-      inputString.match(/\d/)
+      value.match(/\d/)
         ? 'Valid: Contains a number (0-9)'
         : 'Invalid: Requires at least 1 number (0-9)',
     symbol: () =>
-      inputString.match(/[!@#$%^&*(),.?":{}|<>]/)
+      value.match(/[!@#$%^&*(),.?":{}|<>]/)
         ? 'Valid: Contains a symbol (%&,!#)'
         : 'Invalid: Requires at least 1 symbol (%&,!#)',
   };
@@ -71,18 +68,10 @@ const ValidationChecker = ({
   );
 };
 
-export function Validation({
-  inputString,
-  validationType,
-  validationCallback,
-}: ValidationComponentProps) {
+export function Validation(props: ValidationComponentProps) {
   return (
     <View style={styles.inputValidation}>
-      <ValidationChecker
-        validationCallback={validationCallback}
-        type={validationType}
-        inputString={inputString}
-      />
+      <ValidationChecker {...props} />
     </View>
   );
 }
